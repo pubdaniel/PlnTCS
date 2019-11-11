@@ -37,15 +37,16 @@ public class QueryBO {
 		queryObject.setLanguage(nlp.detectLanguage());
 		queryObject.setText(text);
 		
-		queryObject.setEntitys(nlp.findNamedEntity());		
-		queryObject.setSentences(cogroo.extractDocument(text).getSentences()); // Ver com professor como bildar projeto cogroo no projeto e usar RESOURCES (models)
+		queryObject.setEntitys(nlp.findNamedEntity());
+		
+		queryObject.getEntitys().addAll(cogroo.getEntitys());
+		
+//		queryObject.setSentences(cogroo.extractDocument(text).getSentences()); // Ver com professor como bildar projeto cogroo no projeto e usar RESOURCES (models)
 		
 		return queryObject;
 	}
 
-	private List<Entity> getNames() {
-		return cogroo.getNamesEntitys();
-	}
+	
 
 	public String getSqlQuery() throws IOException {
 		QueryObject queryObj = processQuery();
@@ -54,9 +55,6 @@ public class QueryBO {
 		List<Entity> organizations = queryObj.getEntity(Type.ORGANIZATION);
 		List<Entity> nouns = queryObj.getEntity(Type.NOUN);
 		List<Entity> dates = queryObj.getEntity(Type.TIME);
-		
-		
-		
 		
 		return "select * from post limit 10";
 	}

@@ -21,6 +21,7 @@ import org.cogroo.text.Token;
 import org.cogroo.text.impl.DocumentImpl;
 
 import com.danielqueiroz.constants.Constants;
+import com.danielqueiroz.constants.Constants.Entity.Type;
 import com.danielqueiroz.model.Entity;
 
 
@@ -49,16 +50,8 @@ public class Cogroo {
 		return sentence.getTokens();
 	}
 	
-	public List<Token> getNamesTokens() {
-		List<Token> tokens = document.getSentences().get(0).getTokens();
-		List<Token> namesTokens = new ArrayList<>();
-		
-		tokens.forEach(t-> {
-			if (t.getPOSTag().toString().equalsIgnoreCase("prop")) {
-				namesTokens.add(t);
-			}
-		});
-		return namesTokens;
+	public List<Token> getTokens() {
+		return document.getSentences().get(0).getTokens();
 	}
 	
 	public List<Entity> getNamesEntitys() {
@@ -75,69 +68,74 @@ public class Cogroo {
 				namesEntitys.add(entity);
 			}
 		});
+		
+		
 		return namesEntitys;
 	}
 	
-	public void getEntitys() {
-		List<Token> tokens = document.getSentences().get(0).getTokens();
-		tokens.forEach(t-> {
-			if (t.getPOSTag().toString().equalsIgnoreCase("prop")) {
-				System.out.println("pessoa: " + t.getLexeme());
-			
-			}
-			
-			System.out.println(
-					"[LEXEME] " + t.getLexeme()+" " + 
-					"[FEATURE] " + t.getFeatures() + " " + 
-					"[CHUNK] " + t.getChunkTag()+" " + 
-					"[POST] " + t.getPOSTag()+" " + 
-					"[" + t.getPOSTagProb()+"] " + 
-					"[SYNTAG] " + t.getSyntacticTag()+" " + 
-					"[LEMAS]: " + Arrays.asList(t.getLemmas()));
+	public List<Entity> getEntitys() {
+		List<Entity> entitys = new ArrayList<>();
+
+		entitys.addAll(getEntityFromTokensFiltredByPosTag("n", Constants.Entity.Type.NOUN));
+		entitys.addAll(getEntityFromTokensFiltredByPosTag("num", Constants.Entity.Type.NUMERIC));
+		
+		System.out.println("Entidades Cogroo: " + entitys);
+		
+//		getTokens().forEach(t -> {
+//			System.out.println(t);
+//		});
+		return entitys;
+	}
+	
+	
+	private List<Entity> getEntityFromTokensFiltredByPosTag(String posTag, Type typeToCompare) {
+		List<Entity> entitys = new ArrayList<>();
+
+		getTokens().stream().filter(t -> posTag.equalsIgnoreCase(t.getPOSTag())).forEach(n -> {
+			Entity entity = new Entity();
+			entity.setProbability(n.getPOSTagProb());
+			entity.setType(typeToCompare);
+			entity.setDescription(n.getLexeme());
+			entitys.add(entity);
 		});
-		
-	}
-	
-	
-	public Document extractDocument(String text) {
-	    
-	    for (Sentence sentence : document.getSentences()) { // lista de sentenças
-
-//	  	   Tokens
-	  	  for (Token token : sentence.getTokens()) { // lista de tokens
-	  		System.out.println(token.getStart()); token.getEnd(); // caracteres onde o token começa e termina
-	  		System.out.println(token.getLexeme()); // o texto do token
-	  		System.out.println(token.getLemmas()); // um array com os possíveis lemas para o par lexeme+postag
-	  		System.out.println(token.getPOSTag()); // classe morfológica de acordo com o contexto
-	  		System.out.println(token.getFeatures()); // gênero, número, tempo etc
-	  	  }
-
-	  	  // Chunks
-	  	  for (Chunk chunk : sentence.getChunks()) { // lista de chunks
-	  	    chunk.getStart(); chunk.getEnd(); // índice do token onde o chunk começa e do token onde ele termina
-	  	    chunk.getTag(); // the chunk tag
-	  	    chunk.getTokens(); // a list with the covered tokens
-	  	  }
-
-	  	  // Structure
-	  	  for (SyntacticChunk structure : sentence.getSyntacticChunks()) { // lista de SyntacticChunks
-	  	    structure.getStart(); structure.getEnd(); // índice do token onde o structure começa e do token onde ele termina
-	  	    structure.getTag(); // the structure tag
-	  	    structure.getTokens(); // a list with the covered tokens
-	  	  }
-	  	  
-	  	}
-	    return  document;
-		
+		return entitys;
 	}
 
-	public List<Entity> getNames(String text) {
+//	public Document extractDocument(String text) {
+//	    
+//	    for (Sentence sentence : document.getSentences()) { // lista de sentenças
+//
+////	  	   Tokens
+//	  	  for (Token token : sentence.getTokens()) { // lista de tokens
+//	  		System.out.println(token.getStart()); token.getEnd(); // caracteres onde o token começa e termina
+//	  		System.out.println(token.getLexeme()); // o texto do token
+//	  		System.out.println(token.getLemmas()); // um array com os possíveis lemas para o par lexeme+postag
+//	  		System.out.println(token.getPOSTag()); // classe morfológica de acordo com o contexto
+//	  		System.out.println(token.getFeatures()); // gênero, número, tempo etc
+//	  	  }
+//
+//	  	  // Chunks
+//	  	  for (Chunk chunk : sentence.getChunks()) { // lista de chunks
+//	  	    chunk.getStart(); chunk.getEnd(); // índice do token onde o chunk começa e do token onde ele termina
+//	  	    chunk.getTag(); // the chunk tag
+//	  	    chunk.getTokens(); // a list with the covered tokens
+//	  	  }
+//
+//	  	  // Structure
+//	  	  for (SyntacticChunk structure : sentence.getSyntacticChunks()) { // lista de SyntacticChunks
+//	  	    structure.getStart(); structure.getEnd(); // índice do token onde o structure começa e do token onde ele termina
+//	  	    structure.getTag(); // the structure tag
+//	  	    structure.getTokens(); // a list with the covered tokens
+//	  	  }
+//	  	  
+//	  	}
+//	    return  document;
+//		
+//	}
 
-		return null;
-	}
 	
 	public static void main(String[] args) throws IOException {
-		Cogroo c = new Cogroo("Pedro e Ana andam de lindas biciletas azuis ");
+		Cogroo c = new Cogroo("pesquisa sobre Bolsonaro eleições 2019");
 		c.getEntitys();
 		
 		

@@ -39,6 +39,8 @@ public class Entity {
 			return Constants.Entity.Type.ORGANIZATION;
 		case "place":
 			return Constants.Entity.Type.PLACE;
+		case "event":
+			return Constants.Entity.Type.EVENT;
 		default:
 			return null;
 		}

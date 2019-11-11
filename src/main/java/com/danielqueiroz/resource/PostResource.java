@@ -29,18 +29,10 @@ public class PostResource {
 			} catch (QueryProcessorException | IOException e) {
 				return Response.status(Status.BAD_REQUEST).entity(e).build();
 			}			
-		}
+		} 
 		PostBO bo = new PostBO();
 		return Response.ok(bo.getPosts()).build();
 	}
 	
-	@GET
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response getPostDetails(Post post) {
-		
-		
-		return Response.ok().build();
-	}
 	
 }

@@ -49,7 +49,8 @@ public final class Constants {
 			ORGANIZATION("organization"),
 			NUMERIC("numeric"),
 			NOUN("n"), 
-			DATE("date");
+			DATE("date"), 
+			EVENT("event");
 			
 			private String name;
 

@@ -92,13 +92,13 @@ public class OpenNlp {
 	            }
 	            entity.setDescription(description);
 	            
-	            System.out.println(description + " | TYPE" + name.getType()+ "\t\t PROB: "+name.getProb() * 100);
 	        }
 	        
 	        
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		System.out.println("Entidades NLP amazonia: " + entitys);
 		return entitys;
 		
 	}

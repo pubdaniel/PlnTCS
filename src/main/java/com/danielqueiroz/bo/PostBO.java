@@ -17,7 +17,7 @@ public class PostBO {
 	}
 	
 	public List<Post> getPosts(String text) throws QueryProcessorException, IOException {
-		
+		//TODO  implementar busca com parametr => mensagem
 		QueryBO queryBO = new QueryBO(text);
 		String sql = queryBO.getSqlQuery();
 		

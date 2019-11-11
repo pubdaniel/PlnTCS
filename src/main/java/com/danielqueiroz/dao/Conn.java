@@ -11,7 +11,6 @@ import com.danielqueiroz.model.Database;
 
 public class Conn {
 
-	private static Database databse;
 	private static final String driver = "com.mysql.cj.jdbc.Driver";
 	private static final String banco = "pln";
 	private static final String conexao = "jdbc:mysql://localhost:3306/" + banco + "?useTimezone=true&serverTimezone=UTC&useSSL=false";
