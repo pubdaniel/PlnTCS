@@ -9,6 +9,8 @@ public class Query {
 	private Date date;
 	private String message;
 	private Database database;
+	private int relevance;
+
 	
 	public Query() {
 		super();
@@ -36,6 +38,18 @@ public class Query {
 	}
 	public void setMessage(String message) {
 		this.message = message;
+	}
+	public Database getDatabase() {
+		return database;
+	}
+	public void setDatabase(Database database) {
+		this.database = database;
+	}
+	public int getRelevance() {
+		return relevance;
+	}
+	public void setRelevance(int relevance) {
+		this.relevance = relevance;
 	}
 	
 	

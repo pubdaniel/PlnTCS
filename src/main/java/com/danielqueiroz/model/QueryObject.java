@@ -4,26 +4,22 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.cogroo.text.Sentence;
+
+import com.danielqueiroz.constants.Constants;
+import com.danielqueiroz.constants.Constants.Entity.Type;
 
 import opennlp.tools.langdetect.Language;
 
 public class QueryObject {
 
 	private Language language;
-	private List<String> phrases;
-	private List<Entity> names;
+	private List<Entity> entitys;
 	private List<Sentence> sentences;
-	private List<Entity> places;
-	private Period period;
+	private String text;
 	
-
-	
-	public QueryObject() {
-		this.period = Period.between(LocalDate.MIN, LocalDate.MAX);
-	}
-
 	public Language getLanguage() {
 		return language;
 	}
@@ -40,43 +36,45 @@ public class QueryObject {
 		this.sentences = sentences;
 	}
 
-	public List<String> getPhrases() {
-		return phrases;
+	public List<Entity> getEntitys() {
+		return entitys;
 	}
 
-	public void setPhrases(List<String> phrases) {
-		this.phrases = phrases;
+	public void setEntitys(List<Entity> entitys) {
+		this.entitys = entitys;
+	}
+
+	public String getText() {
+		return text;
+	}
+
+	public void setText(String text) {
+		this.text = text;
+	}
+	
+	public List<Entity> getEntity(Type type) {
+		return entitys.stream().filter(p -> type.equals(p.getType())).collect(Collectors.toList());
 	}
 
 	public void setPersons(List<Entity> names) {
-		this.names = names;
-	}
-
-	public List<Entity> getNames() {
-		return names;
-	}
-
-	public void setNames(List<Entity> names) {
-		this.names = names;
-	}
-
-	public List<Entity> getPlaces() {
-		return places;
+		// TODO Auto-generated method stub
+		
 	}
 
 	public void setPlaces(List<Entity> places) {
-		this.places = places;
-	}
-
-	public Period getPeriod() {
-		return period;
+		// TODO Auto-generated method stub
+		
 	}
 
 	public void setPeriod(Period period) {
-		this.period = period;
+		// TODO Auto-generated method stub
+		
 	}
 
-	
+	public void setPhrases(List<String> extractPhrases) {
+		// TODO Auto-generated method stub
+		
+	}
 	
 	
 	

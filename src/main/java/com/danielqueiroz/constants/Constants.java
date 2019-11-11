@@ -1,5 +1,7 @@
 package com.danielqueiroz.constants;
 
+import java.util.Arrays;
+
 public final class Constants {
 
 	public final static class User {
@@ -41,8 +43,13 @@ public final class Constants {
 	public final static class Entity {
 		
 		public static enum Type {
-			PERSON("prop"),
-			NOUN("n");
+			PERSON("person"),
+			TIME("time"),
+			PLACE("place"),
+			ORGANIZATION("organization"),
+			NUMERIC("numeric"),
+			NOUN("n"), 
+			DATE("date");
 			
 			private String name;
 
@@ -54,7 +61,8 @@ public final class Constants {
 				return name;
 			}
 
-		}		
+		}
+
 		
 	}
 

@@ -69,7 +69,7 @@ public class Cogroo {
 			if (t.getPOSTag().toString().equalsIgnoreCase("prop")) {
 				Entity entity = new Entity();
 				entity.setType(Constants.Entity.Type.PERSON);
-				entity.setTypeProbability(t.getPOSTagProb());
+				entity.setProbability(t.getPOSTagProb());
 				entity.setDescription(t.getLexeme());
 				
 				namesEntitys.add(entity);
@@ -102,7 +102,6 @@ public class Cogroo {
 	public Document extractDocument(String text) {
 	    
 	    for (Sentence sentence : document.getSentences()) { // lista de sentenças
-	  	
 
 //	  	   Tokens
 	  	  for (Token token : sentence.getTokens()) { // lista de tokens
@@ -128,8 +127,8 @@ public class Cogroo {
 	  	  }
 	  	  
 	  	}
-	     document.getSentences();
-		return null;
+	    return  document;
+		
 	}
 
 	public List<Entity> getNames(String text) {

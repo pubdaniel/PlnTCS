@@ -1,13 +1,18 @@
 package com.danielqueiroz.model;
 
+import javax.validation.ConstraintTarget;
+
+import com.danielqueiroz.constants.Constants;
 import com.danielqueiroz.constants.Constants.Entity.Type;
+
+import opennlp.tools.util.Span;
 
 public class Entity {
 
 	private Long id;
 	private String description;
 	private Type type;
-	private double typeProbability;
+	private double probability;
 	
 	
 	public Entity() {
@@ -15,6 +20,31 @@ public class Entity {
 	}
 	
 	
+	public Entity(Span name) {
+		this.probability = name.getProb();
+		Type type = getTypeConstant(name.getType());
+		this.type = type;
+		
+	}
+
+	private Type getTypeConstant(String type) {
+		switch (type) {
+		case "person":
+			return Constants.Entity.Type.PERSON;
+		case "numeric":
+			return Constants.Entity.Type.NUMERIC;
+		case "time":
+			return Constants.Entity.Type.TIME;
+		case "organization":
+			return Constants.Entity.Type.ORGANIZATION;
+		case "place":
+			return Constants.Entity.Type.PLACE;
+		default:
+			return null;
+		}
+	}
+
+
 	public String getDescription() {
 		return description;
 	}
@@ -28,11 +58,11 @@ public class Entity {
 		this.type = person;
 	}
 	
-	public double getTypeProbability() {
-		return typeProbability;
+	public double getProbability() {
+		return probability;
 	}
-	public void setTypeProbability(double typeProbability) {
-		this.typeProbability = typeProbability;
+	public void setProbability(double probability) {
+		this.probability = probability;
 	}
 
 	public Long getId() {
@@ -45,7 +75,7 @@ public class Entity {
 	
 	@Override
 	public String toString() {
-		return description + " | " + type + " | " + typeProbability;
+		return description + " | " + type + " | " + probability;
 	}
 	
 	
