@@ -45,7 +45,7 @@ public class QueryResource {
 		QueryBO bo = new QueryBO(user);
 		
 		List<Query> queries = bo.getQueries(user);
-		return Response.ok().entity(queries).build();
+		return Response.ok().entity(queries).header("Access-Control-Allow-Origin", "*").build();
 	}
 	
 	@GET
@@ -63,7 +63,7 @@ public class QueryResource {
 		} catch (QueryProcessorException | IOException e) {
 			Response.status(Status.BAD_REQUEST).entity(e).build();
 		}
-		return Response.status(Status.NOT_FOUND).build();
+		return Response.status(Status.NOT_FOUND).header("Access-Control-Allow-Origin", "*").build();
 		
 	}
 	

@@ -23,7 +23,7 @@ public class UserBO {
 			return null;
 		}
 		
-		if (user.getAuthkey() != null) {
+		if (user.getAuthkey() != null && !user.getAuthkey().trim().isEmpty()) {
 			return user.getAuthkey();
 		}
 		

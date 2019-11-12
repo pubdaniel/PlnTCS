@@ -43,10 +43,10 @@ public class PostResource {
 			try {
 				return Response.ok(bo.getPosts(text)).build();
 			} catch (QueryProcessorException | IOException e) {
-				return Response.status(Status.BAD_REQUEST).entity(e).build();
+				return Response.status(Status.BAD_REQUEST).header("Access-Control-Allow-Origin", "*").entity(e).build();
 			}			
 		} 
-		return Response.ok(bo.getPosts()).build();
+		return Response.ok(bo.getPosts()).header("Access-Control-Allow-Origin", "*").build();
 	}
 	
 	

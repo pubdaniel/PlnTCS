@@ -79,15 +79,17 @@ public class UserDAO {
 		
 		try  (Connection conn = Conn.getConnection(); PreparedStatement prepStmt = Conn.getPreparedStatement(conn, sql);){
 			
-			String key = new Date().getTime() + user.getName();
+			String key = String.valueOf(new Date().getTime() + user.getName().hashCode());
 			
-			prepStmt.setString(1, String.valueOf(key.hashCode()));
+			prepStmt.setString(1, key);
 			prepStmt.setLong(2, user.getId());
 			
 			Integer response = prepStmt.executeUpdate();
 			
+			User userUpdated = getUser(key);
+			
 			if (response > 0) {
-				return getUser(user.getAuthkey());
+				return userUpdated;
 			}
 		} catch (SQLException e) {
 			System.out.println("Erro ao carregar usuário: " + e.getMessage());

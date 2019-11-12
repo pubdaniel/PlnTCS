@@ -32,7 +32,7 @@ public class UserService {
 		UserBO bo = new UserBO();
 		User user = bo.getUser(key);
 		
-		return Response.ok(user).build();
+		return Response.ok(user).header("Access-Control-Allow-Origin", "*").build();
 	}
 	
 	
@@ -48,7 +48,7 @@ public class UserService {
 		
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("key", authkey);
-		return Response.ok(map).build();
+		return Response.ok(map).header("Access-Control-Allow-Origin", "*").build();
 	}
 	
 

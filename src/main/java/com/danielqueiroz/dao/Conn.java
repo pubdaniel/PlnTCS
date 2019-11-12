@@ -12,10 +12,11 @@ import com.danielqueiroz.model.Database;
 public class Conn {
 
 	private static final String driver = "com.mysql.cj.jdbc.Driver";
-	private static final String banco = "pln";
-	private static final String conexao = "jdbc:mysql://localhost:3306/" + banco + "?useTimezone=true&serverTimezone=UTC&useSSL=false";
-	private static final String user = "root";
-	private static final String password = "";
+	private static final String banco = "xrh48mk44bfxc8c4";
+//	private static final String conexao = "jdbc:mysql://lolyz0ok3stvj6f0.cbetxkdyhwsb.us-east-1.rds.amazonaws.com:3306/" + banco + "?useTimezone=true&serverTimezone=UTC&useSSL=false";
+	private static final String conexao = "jdbc:mysql://wpw2e75eayunuhzc:qda7s86225ihh15x@lolyz0ok3stvj6f0.cbetxkdyhwsb.us-east-1.rds.amazonaws.com:3306/xrh48mk44bfxc8c4";
+	private static final String user = "wpw2e75eayunuhzc";
+	private static final String password = "qda7s86225ihh15x";
 	
 	public static Connection getConnection() {
 		try {

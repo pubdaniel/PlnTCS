@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.ws.rs.GET;
+
 import com.danielqueiroz.dao.Conn;
 import com.danielqueiroz.dao.PostDAO;
 import com.danielqueiroz.model.Post;
@@ -22,42 +24,50 @@ public class DataBaseUtil {
 	static int count = 0;
 	static List<Post> posts;
 	
-	public static void savePostsFromCSV() throws IOException {
+	public static void savePostsFromCSV() {
 		File fileCSV = new File(
-				"D:\\Desenvimento\\git\\PlnTCS\\src\\main\\resources\\db\\08112019 144958-tweets-pt-BR_.csv");
+				"D:\\Desenvimento\\git\\PlnTCS\\src\\main\\resources\\db\\08112019 144958-tweets-pt-BR.csv");
 
 		posts = new ArrayList<>();
-
-		Files.lines(fileCSV.toPath(), Charset.forName("UTF-8")).forEach(l -> {
-			String[] line = l.split(";");
-			if (line.length == 9) {
-
-				Post p = new Post();
-				p.setId(line[0]);
-				p.setUsername(line[1]);
-				p.setName(line[2]);
-				p.setFollowers(Integer.parseInt(line[3]));
-				p.setPlace(line[4]);
-				p.setPostid(Long.parseLong(line[5]));
-				p.setRetweet(Boolean.parseBoolean((line[6])));
-				p.setText(line[7]);
-				Date date;
-				try {
-					date = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").parse(line[8]);
-					p.setDate(date);
-				} catch (ParseException e) {
-					e.printStackTrace();
+		try {
+			Files.lines(fileCSV.toPath(), Charset.forName("UTF-8")).forEach(l -> {
+				
+				String[] line = l.split(";");
+				if (line.length == 9) {
+					
+					Post p = new Post();
+					p.setId(line[0]);
+					p.setUsername(line[1]);
+					p.setName(line[2]);
+					p.setFollowers(Integer.parseInt(line[3]));
+					p.setPlace(line[4]);
+					p.setPostid(Long.parseLong(line[5]));
+					p.setRetweet(Boolean.parseBoolean((line[6])));
+					p.setText(line[7]);
+					Date date;
+					try {
+						date = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").parse(line[8]);
+						p.setDate(date);
+					} catch (ParseException e) {
+						e.printStackTrace();
+					}
+//					savePost(p);
+					System.out.print(".");					
+					if (posts.size() >= 100) {
+						savePosts(posts);
+						posts = new ArrayList<>();
+						System.out.println(count += posts.size());
+						System.out.println("wait...");
+						
+					} else {
+						posts.add(p);
+					}
+					
 				}
-
-				if (posts.size() >= 1000) {
-					savePosts(posts);
-					posts = new ArrayList<>();
-				} else {
-					posts.add(p);
-				}
-
-			}
-		});
+			});
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
 	}
 
