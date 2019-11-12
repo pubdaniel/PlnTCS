@@ -31,7 +31,6 @@ import opennlp.tools.util.featuregen.TokenPatternFeatureGenerator;
 public class OpenNlp {
 
 	private String text;
-	private static final String RESOURCE_BASE_PATH = "D:\\Desenvimento\\git\\PlnTCS\\src\\main\\resources\\";
 	private static LanguageDetectorModel languageModel;
 	private static SentenceModel sentenceModel;
 	private static TokenNameFinderModel namedFinderModel;
@@ -40,10 +39,10 @@ public class OpenNlp {
 
 	public OpenNlp(String text) throws IOException {
 		this.text = text;
-		languageModel = new LanguageDetectorModel(new File(RESOURCE_BASE_PATH + "models\\langdetect-183.bin"));
-		sentenceModel = new SentenceModel(new File(RESOURCE_BASE_PATH + "models\\pt-sent.bin"));
-		tokenModel = new TokenizerModel(new File(RESOURCE_BASE_PATH + "models\\cogroo\\pt-tok.model"));
-		namedFinderModel = new TokenNameFinderModel(new File(RESOURCE_BASE_PATH + "models\\amazonia\\ner-amazonia-custom-model.bin"));
+		languageModel = new LanguageDetectorModel(getClass().getClassLoader().getResourceAsStream("models\\langdetect-183.bin"));
+		sentenceModel = new SentenceModel(getClass().getClassLoader().getResourceAsStream("models\\pt-sent.bin"));
+		tokenModel = new TokenizerModel(getClass().getClassLoader().getResourceAsStream("models\\cogroo\\pt-tok.model"));
+		namedFinderModel = new TokenNameFinderModel(getClass().getClassLoader().getResourceAsStream("models\\amazonia\\ner-amazonia-custom-model.bin"));
 
 	}
 
@@ -75,7 +74,7 @@ public class OpenNlp {
 		List<Entity> entitys = new ArrayList<>();
 
 		try {
-			tokenizerModel = new TokenizerModel(new File("D:\\Desenvimento\\git\\PlnTCS\\src\\main\\resources\\models\\cogroo\\pt-tok.model"));
+			tokenizerModel = new TokenizerModel(getClass().getClassLoader().getResourceAsStream("models\\cogroo\\pt-tok.model"));
 			Tokenizer tokenizer = new TokenizerME(tokenizerModel);
 			
 	        String[] testSentence =tokenizer.tokenize(text);
