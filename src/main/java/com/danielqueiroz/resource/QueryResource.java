@@ -17,13 +17,15 @@ import javax.ws.rs.core.Response.Status;
 
 import com.danielqueiroz.bo.PostBO;
 import com.danielqueiroz.bo.QueryBO;
+import com.danielqueiroz.bo.UserBO;
 import com.danielqueiroz.dao.PostDAO;
 import com.danielqueiroz.exception.QueryProcessorException;
 import com.danielqueiroz.model.Query;
 import com.danielqueiroz.model.QueryObject;
+import com.danielqueiroz.model.User;
 
 
-@Path("/")
+@Path("")
 public class QueryResource {
 	
 	
@@ -31,18 +33,27 @@ public class QueryResource {
 	@GET
 	@Path("/queries")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getQueries() {
-		List<Query> queries = new ArrayList<>();
-		return null;
+	public Response getQueries(@QueryParam("key") String key) {
+		UserBO userBO =new UserBO();
+		
+		User user = userBO.getUser(key);
+		
+		QueryBO bo = new QueryBO(user);
+		
+		List<Query> queries = bo.getQueries();
+		return Response.ok().entity(queries).build();
 	}
 	
 	@GET
 	@Path("/query")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getQuery(@QueryParam("text") String text) {
+	public Response getQuery(@QueryParam("text") String text, String key) {
+		UserBO userBO =new UserBO();
+		User user  = userBO.getUser(key);
+		
 		QueryBO bo;
 		try {
-			bo = new QueryBO(text);
+			bo = new QueryBO(text, user);
 			QueryObject queryObj = bo.processQuery();
 			return Response.ok().entity(queryObj).build();
 		} catch (QueryProcessorException | IOException e) {

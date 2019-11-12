@@ -8,11 +8,20 @@ public class User {
 	private String email;
 	private String phone;
 	private String password;
-	private Permission permission;
+	private String authkey;
+	private Integer permission;
 	
 	public User() {
 		super();
 	}
+	
+	
+	public User(Long id) {
+		super();
+		this.id = id;
+	}
+
+
 	public Long getId() {
 		return id;
 	}
@@ -43,10 +52,11 @@ public class User {
 	public void setPhone(String phone) {
 		this.phone = phone;
 	}
-	public Permission getPermission() {
+	
+	public Integer getPermission() {
 		return permission;
 	}
-	public void setPermission(Permission permission) {
+	public void setPermission(Integer permission) {
 		this.permission = permission;
 	}
 	public String getPassword() {
@@ -55,6 +65,23 @@ public class User {
 	public void setPassword(String password) {
 		this.password = password;
 	}
+	
+	public String getAuthkey() {
+		return authkey;
+	}
+
+	public void setAuthkey(String authkey) {
+		this.authkey = authkey;
+	}
+
+
+	@Override
+	public String toString() {
+		return "User id " + id + ", name " + name + ", nickname " + nickname + ", email " + email + ", phone " + phone
+				+ ", password " + password + ", authkey " + authkey + ", permission " + permission;
+	}
+
+	
 	
 	
 	

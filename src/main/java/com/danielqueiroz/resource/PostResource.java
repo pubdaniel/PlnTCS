@@ -12,25 +12,41 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import com.danielqueiroz.bo.PostBO;
+import com.danielqueiroz.bo.UserBO;
 import com.danielqueiroz.exception.QueryProcessorException;
 import com.danielqueiroz.model.Post;
+import com.danielqueiroz.model.User;
+import com.mysql.cj.protocol.x.Ok;
 
-@Path("/post")
+@Path("/posts")
 public class PostResource {
 	
 	
 	@GET
+	@Path("test")
+	public Response teste() {
+		return  Response.ok().build();
+	}
+	
+	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getPosts(@QueryParam("text") String text) {
+	public Response getPosts(@QueryParam("text") String text, String key) {
+		UserBO userBO = new UserBO();
+		User user  = userBO.getUser(key);
+		
+		if (user.getId() == null) {
+			return Response.status(Status.UNAUTHORIZED).build();
+		}		
+
+		PostBO bo = new PostBO(user);
+		
 		if (text != null) {
-			PostBO bo = new PostBO();
 			try {
 				return Response.ok(bo.getPosts(text)).build();
 			} catch (QueryProcessorException | IOException e) {
 				return Response.status(Status.BAD_REQUEST).entity(e).build();
 			}			
 		} 
-		PostBO bo = new PostBO();
 		return Response.ok(bo.getPosts()).build();
 	}
 	
