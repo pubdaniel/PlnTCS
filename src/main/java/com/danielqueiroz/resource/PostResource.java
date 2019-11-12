@@ -23,14 +23,13 @@ public class PostResource {
 	
 	
 	@GET
-	@Path("test")
-	public Response teste() {
-		return  Response.ok().build();
-	}
-	
-	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getPosts(@QueryParam("text") String text, String key) {
+	public Response getPosts(@QueryParam("text") String text, @QueryParam("key") String key) {
+		
+		if (key == null || key.trim().isEmpty()) {
+			return Response.status(Status.UNAUTHORIZED).build();
+		}
+		
 		UserBO userBO = new UserBO();
 		User user  = userBO.getUser(key);
 		

@@ -15,14 +15,15 @@ import com.danielqueiroz.model.User;
 
 public class QueryDAO {
 
-	public List<Query> getQueries() {
-		String sql = "select * from query limit 100";
+	public List<Query> getQueries(User user) {
+		String sql = "select * from query where user_id=? limit 100";
 		List<Query> queries = new ArrayList<>();
 
 		try (Connection conn = Conn.getConnection();
 				PreparedStatement prepStmt = Conn.getPreparedStatement(conn, sql)) {
+			prepStmt.setLong(1, user.getId());
+			
 			ResultSet result = prepStmt.executeQuery();
-
 
 			while (result.next()) {
 				Query query = new Query();

@@ -29,18 +29,22 @@ import com.danielqueiroz.model.User;
 public class QueryResource {
 	
 	
-	//buscar lista de pesquisas realizadas
 	@GET
 	@Path("/queries")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getQueries(@QueryParam("key") String key) {
+		
 		UserBO userBO =new UserBO();
 		
 		User user = userBO.getUser(key);
 		
+		if (user == null) {
+			return Response.status(Status.UNAUTHORIZED).build();
+		}
+		
 		QueryBO bo = new QueryBO(user);
 		
-		List<Query> queries = bo.getQueries();
+		List<Query> queries = bo.getQueries(user);
 		return Response.ok().entity(queries).build();
 	}
 	

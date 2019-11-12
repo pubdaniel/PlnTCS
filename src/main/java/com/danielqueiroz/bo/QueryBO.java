@@ -76,9 +76,9 @@ public class QueryBO {
 		return "select * from post limit 10";
 	}
 
-	public List<Query> getQueries() {
+	public List<Query> getQueries(User user) {
 		QueryDAO dao = new QueryDAO();
-		return dao.getQueries();
+		return dao.getQueries(user);
 	}
 
 	
