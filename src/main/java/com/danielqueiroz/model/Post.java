@@ -13,10 +13,20 @@ public class Post {
 	private boolean isRetweet;
 	private String text;
 	private Date date;
-	
+	private Integer Relevance;
+
 	public Post() {
 		super();
 	}
+	
+	public Integer getRelevance() {
+		return Relevance;
+	}
+
+	public void setRelevance(Integer relevance) {
+		Relevance = relevance;
+	}
+	
 
 	public String getId() {
 		return id;

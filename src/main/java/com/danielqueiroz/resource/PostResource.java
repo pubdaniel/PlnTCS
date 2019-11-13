@@ -27,21 +27,21 @@ public class PostResource {
 	public Response getPosts(@QueryParam("text") String text, @QueryParam("key") String key) {
 		
 		if (key == null || key.trim().isEmpty()) {
-			return Response.status(Status.UNAUTHORIZED).build();
+			return Response.status(Status.UNAUTHORIZED).header("Access-Control-Allow-Origin", "*").build();
 		}
 		
 		UserBO userBO = new UserBO();
 		User user  = userBO.getUser(key);
 		
 		if (user.getId() == null) {
-			return Response.status(Status.UNAUTHORIZED).build();
+			return Response.status(Status.UNAUTHORIZED).header("Access-Control-Allow-Origin", "*").build();
 		}		
 
 		PostBO bo = new PostBO(user);
 		
 		if (text != null) {
 			try {
-				return Response.ok(bo.getPosts(text)).build();
+				return Response.ok(bo.getPosts(text)).header("Access-Control-Allow-Origin", "*").build();
 			} catch (QueryProcessorException | IOException e) {
 				return Response.status(Status.BAD_REQUEST).header("Access-Control-Allow-Origin", "*").entity(e).build();
 			}			

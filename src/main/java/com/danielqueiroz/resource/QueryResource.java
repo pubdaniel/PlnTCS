@@ -25,12 +25,12 @@ import com.danielqueiroz.model.QueryObject;
 import com.danielqueiroz.model.User;
 
 
-@Path("")
+@Path("/query")
 public class QueryResource {
 	
 	
 	@GET
-	@Path("/queries")
+	@Path("/all")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getQueries(@QueryParam("key") String key) {
 		
@@ -49,9 +49,9 @@ public class QueryResource {
 	}
 	
 	@GET
-	@Path("/query")
+	@Path("query")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getQuery(@QueryParam("text") String text, String key) {
+	public Response getQuery(@QueryParam("text") String text, @QueryParam("key") String key) {
 		UserBO userBO =new UserBO();
 		User user  = userBO.getUser(key);
 		

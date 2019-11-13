@@ -31,6 +31,7 @@ public class PostDAO {
 
 			while (result.next()) {
 				Post p = sqlResultToPost(result);
+				p.setRelevance(result.getInt("relevance"));
 				posts.add(p);
 			}
 		} catch (SQLException e) {
@@ -40,12 +41,11 @@ public class PostDAO {
 	}
 
 	
-
 	public List<Post> getPosts() {
 
 		List<Post> posts = new ArrayList<>();
 
-		String sql = "select * from post limit 25";
+		String sql = "select * from post limit 10";
 
 		Connection conn = Conn.getConnection();
 		PreparedStatement prepStmt = Conn.getPreparedStatement(conn, sql);
@@ -54,6 +54,7 @@ public class PostDAO {
 			ResultSet result = prepStmt.executeQuery();
 			while (result.next()) {
 				Post p = sqlResultToPost(result);
+				p.setRelevance(0);
 				posts.add(p);
 			}
 		} catch (SQLException e) {
@@ -61,6 +62,7 @@ public class PostDAO {
 		}
 		return posts;
 	}
+
 	
 	private Post sqlResultToPost(ResultSet result) throws SQLException {
 		Post p = new Post();
@@ -72,6 +74,8 @@ public class PostDAO {
 		p.setPostid(result.getLong("postid"));
 		p.setRetweet(result.getBoolean("isRetweet"));
 		p.setText(result.getString("message"));
+		p.setDate(result.getDate("postdate"));
+		
 		return p;
 	}
 

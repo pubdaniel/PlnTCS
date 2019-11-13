@@ -28,7 +28,11 @@ public class PostBO {
 		String sql = queryBO.getSqlQuery();
 		
 		PostDAO dao = new PostDAO();
-		return dao.getPosts(sql);		
+		List<Post> posts = dao.getPosts(sql);
+		
+		queryBO.saveQuery(posts);
+		
+		return posts;
 
 	}
 	
