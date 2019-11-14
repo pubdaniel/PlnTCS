@@ -40,7 +40,8 @@ public final class Constants {
 			NUMERIC("numeric"),
 			NOUN("n"), 
 			DATE("date"), 
-			EVENT("event");
+			EVENT("event"), 
+			ACTION("v-fin");
 			
 			private String name;
 

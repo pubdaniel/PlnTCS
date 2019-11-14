@@ -74,24 +74,39 @@ public class Cogroo {
 	}
 	
 	public List<Entity> getEntitys() {
-		List<Entity> entitys = new ArrayList<>();
-
-		entitys.addAll(getEntityFromTokensFiltredByPosTag("n", Constants.Entity.Type.NOUN));
-		entitys.addAll(getEntityFromTokensFiltredByPosTag("num", Constants.Entity.Type.NUMERIC));
+		List<Entity> entities = new ArrayList<>();
+		List<Token> tokens = new ArrayList<>();
 		
-		System.out.println("Entidades Cogroo: " + entitys);
+		document.getSentences().forEach(s -> {
+			s.getTokens().forEach(t -> {
+				tokens.add(t);
+			});
+		});
 		
-//		getTokens().forEach(t -> {
-//			System.out.println(t);
+		entities.addAll(getEntityFromTokensFiltredByPosTag("n", Constants.Entity.Type.NOUN, tokens));
+		entities.addAll(getEntityFromTokensFiltredByPosTag("num", Constants.Entity.Type.NUMERIC, tokens));
+		entities.addAll(getEntityFromTokensFiltredByPosTag("v-fin", Constants.Entity.Type.ACTION, tokens));
+		
+		System.out.println(tokens);
+		
+//		getTokens().stream().forEach(n -> {
+//			Entity entity = new Entity();
+//			entity.setProbability(n.getPOSTagProb());
+//			entity.setType(n.getPOSTag());
+//			entity.setDescription(n.getLexeme());
+//			entities.add(entity);
+//			System.out.println(n);
 //		});
-		return entitys;
+		
+		System.out.println("Entidades Cogroo: " + entities);
+		
+		return entities;
 	}
 	
-	
-	private List<Entity> getEntityFromTokensFiltredByPosTag(String posTag, Type typeToCompare) {
+	private List<Entity> getEntityFromTokensFiltredByPosTag(String posTag, Type typeToCompare, List<Token> tokens) {
 		List<Entity> entitys = new ArrayList<>();
 
-		getTokens().stream().filter(t -> posTag.equalsIgnoreCase(t.getPOSTag())).forEach(n -> {
+		tokens.stream().filter(t -> posTag.equalsIgnoreCase(t.getPOSTag())).forEach(n -> {
 			Entity entity = new Entity();
 			entity.setProbability(n.getPOSTagProb());
 			entity.setType(typeToCompare);
@@ -100,39 +115,6 @@ public class Cogroo {
 		});
 		return entitys;
 	}
-
-//	public Document extractDocument(String text) {
-//	    
-//	    for (Sentence sentence : document.getSentences()) { // lista de sentenças
-//
-////	  	   Tokens
-//	  	  for (Token token : sentence.getTokens()) { // lista de tokens
-//	  		System.out.println(token.getStart()); token.getEnd(); // caracteres onde o token começa e termina
-//	  		System.out.println(token.getLexeme()); // o texto do token
-//	  		System.out.println(token.getLemmas()); // um array com os possíveis lemas para o par lexeme+postag
-//	  		System.out.println(token.getPOSTag()); // classe morfológica de acordo com o contexto
-//	  		System.out.println(token.getFeatures()); // gênero, número, tempo etc
-//	  	  }
-//
-//	  	  // Chunks
-//	  	  for (Chunk chunk : sentence.getChunks()) { // lista de chunks
-//	  	    chunk.getStart(); chunk.getEnd(); // índice do token onde o chunk começa e do token onde ele termina
-//	  	    chunk.getTag(); // the chunk tag
-//	  	    chunk.getTokens(); // a list with the covered tokens
-//	  	  }
-//
-//	  	  // Structure
-//	  	  for (SyntacticChunk structure : sentence.getSyntacticChunks()) { // lista de SyntacticChunks
-//	  	    structure.getStart(); structure.getEnd(); // índice do token onde o structure começa e do token onde ele termina
-//	  	    structure.getTag(); // the structure tag
-//	  	    structure.getTokens(); // a list with the covered tokens
-//	  	  }
-//	  	  
-//	  	}
-//	    return  document;
-//		
-//	}
-
 	
 	public static void main(String[] args) throws IOException {
 		Cogroo c = new Cogroo("pesquisa sobre Bolsonaro eleições 2019");

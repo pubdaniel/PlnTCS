@@ -9,6 +9,7 @@ public class Query {
 	private Date date;
 	private String message;
 	private Database database;
+	private String sql;
 	private int relevance;
 
 	
@@ -51,6 +52,18 @@ public class Query {
 	public void setRelevance(int relevance) {
 		this.relevance = relevance;
 	}
+	public String getSql() {
+		return sql;
+	}
+	public void setSql(String sql) {
+		this.sql = sql;
+	}
+	@Override
+	public String toString() {
+		return "Query id " + id + ", user " + user + ", date " + date + ", message " + message + ", database "
+				+ database + ", sql " + sql + ", relevance " + relevance;
+	}
+	
 	
 	
 	

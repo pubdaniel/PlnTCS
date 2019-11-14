@@ -2,6 +2,7 @@ package com.danielqueiroz.bo;
 
 import java.io.IOException;
 import java.time.Period;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.ConstraintTarget;
@@ -25,6 +26,8 @@ public class QueryBO {
 	private Cogroo cogroo;
 	private String text;
 	private User user;
+	private Integer entitiesCount;
+	private List<Entity> entities;
 
 	public QueryBO(User user) {
 		this.user = user;
@@ -33,6 +36,8 @@ public class QueryBO {
 	public QueryBO(String text, User user) throws QueryProcessorException {
 		this.user = user;
 		this.text = text;
+		this.entitiesCount = 0;
+		entities = new ArrayList<>();
 		try {
 			nlp = new OpenNlp(text);
 			cogroo = new Cogroo(text);
@@ -48,47 +53,51 @@ public class QueryBO {
 		queryObject.setText(text);
 
 		queryObject.setEntitys(nlp.findNamedEntity());
-
+		
 		queryObject.getEntitys().addAll(cogroo.getEntitys());
 
-//		queryObject.setSentences(cogroo.extractDocument(text).getSentences()); // Ver com professor como bildar projeto cogroo no projeto e usar RESOURCES (models)
-
+		 // Ver com professor como bildar projeto cogroo no projeto e usar RESOURCES (models)
+		System.out.println(queryObject);
 		return queryObject;
 	}
 
 	public String getSqlQuery() throws IOException {
+		//filtra tipos de entidades
 		QueryObject queryObj = processQuery();
 		List<Entity> persons = queryObj.getEntity(Type.PERSON);
 		List<Entity> places = queryObj.getEntity(Type.PLACE);
 		List<Entity> organizations = queryObj.getEntity(Type.ORGANIZATION);
 		List<Entity> nouns = queryObj.getEntity(Type.NOUN);
+		
 		List<Entity> dates = queryObj.getEntity(Type.TIME);
 
-		QueryDAO dao = new QueryDAO();
-
-		Query query = new Query();
-		query.setMessage(text);
-		query.setUser(user);
-		query.setRelevance(65);// TODO ajustar para valor real
-		dao.saveQuery(query);
-
+		this.entitiesCount = persons.size() + places.size() + organizations.size() + nouns.size();
+		
+		entities.addAll(persons);
+		entities.addAll(nouns);
+		entities.addAll(organizations);
+		entities.addAll(places);
+				
+		//melhorias
+		 // se antes de lugar tiver estiver em pesquisar fazer where post.place={lugar}
+		 // se antes de pessoa tiver => chamadas, de, do, da (lema) fazer where posts.username={nome}
 		
 		StringBuilder sb = new StringBuilder();
-		sb.append(
-				" select (count(id)/ " + nouns.size() +" * 100) as relevance, id, id_post, username, name, message, fallowers, location, postid,isRetweet, postdate from ( ");
+		sb.append(" select (count(id)/ " + this.entitiesCount +" * 100) as relevance, id, id_post, username, name, message, fallowers, location, postid,isRetweet, postdate from ( ");
+		mountSelectFromEntities(entities, sb);
+		sb.append( ") as result group by id order by relevance desc;");
 		
-		for (int i =0; i < nouns.size(); i++) {
+		return sb.toString();
+	}
+
+	private void mountSelectFromEntities(List<Entity> entities, StringBuilder sb) {
+		for (int i =0; i < entities.size(); i++) {
 			sb.append(
-					" select count(1) as rel, id, id_post, username, name, message, fallowers, location, postid,isRetweet, postdate from post where message like \"%" + nouns.get(i).getDescription()+ "%\" group by id ");
-			if (!(i + 1  == nouns.size())) {
+					" select count(1) as rel, id, id_post, username, name, message, fallowers, location, postid,isRetweet, postdate from post where message like \"%" + entities.get(i).getDescription()+ "%\" group by id ");
+			if (!(i + 1  == entities.size())) {
 				sb.append(" union all ");	
 			}
 		}
-		sb.append( ") as result group by id order by relevance desc;");
-
-		String sql = sb.toString();
-		
-		return sql;
 	}
 
 	public List<Query> getQueries(User user) {
@@ -103,6 +112,22 @@ public class QueryBO {
 		for (Post p : posts) {
 			sum += p.getRelevance();
 		}
+		
+	}
+
+	public Query getQuery(int postsSize) {
+		Query query = new Query();
+		query.setUser(user);
+		query.setMessage(text);
+		return query;
+	}
+
+	public Double getAcuracy() {
+		Double sum = 0D;
+		for (Entity e : entities) {
+			sum += e.getProbability();
+		}
+		return (sum *100 ) / entities.size();
 		
 	}
 

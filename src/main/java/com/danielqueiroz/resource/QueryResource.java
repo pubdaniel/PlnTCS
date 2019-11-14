@@ -5,7 +5,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -18,6 +20,7 @@ import javax.ws.rs.core.Response.Status;
 import com.danielqueiroz.bo.PostBO;
 import com.danielqueiroz.bo.QueryBO;
 import com.danielqueiroz.bo.UserBO;
+import com.danielqueiroz.constants.Constants;
 import com.danielqueiroz.dao.PostDAO;
 import com.danielqueiroz.exception.QueryProcessorException;
 import com.danielqueiroz.model.Query;
@@ -45,11 +48,11 @@ public class QueryResource {
 		QueryBO bo = new QueryBO(user);
 		
 		List<Query> queries = bo.getQueries(user);
+		
 		return Response.ok().entity(queries).header("Access-Control-Allow-Origin", "*").build();
 	}
 	
 	@GET
-	@Path("query")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getQuery(@QueryParam("text") String text, @QueryParam("key") String key) {
 		UserBO userBO =new UserBO();
@@ -59,9 +62,10 @@ public class QueryResource {
 		try {
 			bo = new QueryBO(text, user);
 			QueryObject queryObj = bo.processQuery();
-			return Response.ok().entity(queryObj).build();
+			
+			return Response.ok().header("Access-Control-Allow-Origin", "*").entity(queryObj).build();
 		} catch (QueryProcessorException | IOException e) {
-			Response.status(Status.BAD_REQUEST).entity(e).build();
+			Response.status(Status.BAD_REQUEST).header("Access-Control-Allow-Origin", "*").entity(e).build();
 		}
 		return Response.status(Status.NOT_FOUND).header("Access-Control-Allow-Origin", "*").build();
 		

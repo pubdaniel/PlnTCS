@@ -16,7 +16,7 @@ import com.danielqueiroz.model.User;
 public class QueryDAO {
 
 	public List<Query> getQueries(User user) {
-		String sql = "select * from query where user_id=? limit 100";
+		String sql = "select * from query where user_id=? order by date desc limit 25 ";
 		List<Query> queries = new ArrayList<>();
 
 		try (Connection conn = Conn.getConnection();
@@ -28,7 +28,7 @@ public class QueryDAO {
 			while (result.next()) {
 				Query query = new Query();
 				query.setId(result.getLong("id"));
-				query.setUser(new User(result.getLong("user_id")));
+				query.setUser(user);
 				query.setDate(result.getDate("date"));
 				query.setMessage(result.getString("message"));
 				query.setRelevance(result.getInt("relevance"));
