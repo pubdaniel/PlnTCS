@@ -42,7 +42,6 @@ public class UserService {
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getLogin(@FormParam("username") String username, @FormParam("password") String password) {
-		
 		UserBO bo = new UserBO();
 		String authkey = bo.getKey(username, password);
 		

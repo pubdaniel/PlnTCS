@@ -47,7 +47,7 @@ public class QueryResource {
 		
 		QueryBO bo = new QueryBO(user);
 		
-		List<Query> queries = bo.getQueries(user);
+		List<Query> queries = bo.getQueries();
 		
 		return Response.ok().entity(queries).header("Access-Control-Allow-Origin", "*").build();
 	}

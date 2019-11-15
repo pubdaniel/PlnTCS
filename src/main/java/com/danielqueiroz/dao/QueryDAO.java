@@ -15,17 +15,21 @@ import com.danielqueiroz.model.User;
 
 public class QueryDAO {
 
-	public List<Query> getQueries(User user) {
-		String sql = "select * from query where user_id=? order by date desc limit 25 ";
+	public List<Query> getQueries() {
+		String sql = "select * from query inner join user on user.id = query.user_id order by date desc limit 200";
 		List<Query> queries = new ArrayList<>();
 
 		try (Connection conn = Conn.getConnection();
 				PreparedStatement prepStmt = Conn.getPreparedStatement(conn, sql)) {
-			prepStmt.setLong(1, user.getId());
-			
+						
 			ResultSet result = prepStmt.executeQuery();
 
 			while (result.next()) {
+				User user = new User();
+				user.setId(result.getLong("user_id"));
+				user.setName(result.getString("name"));
+				user.setNickname(result.getString("nickname"));
+				
 				Query query = new Query();
 				query.setId(result.getLong("id"));
 				query.setUser(user);

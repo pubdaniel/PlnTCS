@@ -100,9 +100,9 @@ public class QueryBO {
 		}
 	}
 
-	public List<Query> getQueries(User user) {
+	public List<Query> getQueries() {
 		QueryDAO dao = new QueryDAO();
-		return dao.getQueries(user);
+		return dao.getQueries();
 	}
 
 	
