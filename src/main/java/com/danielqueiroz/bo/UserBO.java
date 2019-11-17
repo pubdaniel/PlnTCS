@@ -30,4 +30,9 @@ public class UserBO {
 		return dao.updateAuthKey(user).getAuthkey();
 	}
 
+	public Boolean logOut(User user) {
+		return dao.logOut(user);
+		
+	}
+
 }

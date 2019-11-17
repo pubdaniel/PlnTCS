@@ -42,7 +42,7 @@ public class QueryResource {
 		User user = userBO.getUser(key);
 		
 		if (user == null) {
-			return Response.status(Status.UNAUTHORIZED).build();
+			return Response.status(Status.UNAUTHORIZED).header("Access-Control-Allow-Origin", "*").build();
 		}
 		
 		QueryBO bo = new QueryBO(user);

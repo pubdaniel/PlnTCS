@@ -98,4 +98,22 @@ public class UserDAO {
 		
 	}
 
+	public Boolean logOut(User user) {
+		String sql = "update user set authkey='' where id=?";
+		
+		try  (Connection conn = Conn.getConnection(); PreparedStatement prepStmt = Conn.getPreparedStatement(conn, sql);){
+			
+			prepStmt.setLong(1, user.getId());
+			
+			Integer response = prepStmt.executeUpdate();
+						
+			if (response > 0) {
+				return true;
+			}
+		} catch (SQLException e) {
+			System.out.println("Erro ao carregar usuário: " + e.getMessage());
+		}
+		return false;
+	}
+
 }

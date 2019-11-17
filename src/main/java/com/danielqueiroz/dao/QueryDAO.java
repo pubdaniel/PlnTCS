@@ -6,7 +6,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.danielqueiroz.model.Query;
@@ -16,7 +18,7 @@ import com.danielqueiroz.model.User;
 public class QueryDAO {
 
 	public List<Query> getQueries() {
-		String sql = "select * from query inner join user on user.id = query.user_id order by date desc limit 200";
+		String sql = "select * from query inner join user on user.id = query.user_id order by query.id desc limit 200";
 		List<Query> queries = new ArrayList<>();
 
 		try (Connection conn = Conn.getConnection();
@@ -24,6 +26,8 @@ public class QueryDAO {
 						
 			ResultSet result = prepStmt.executeQuery();
 
+			SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			
 			while (result.next()) {
 				User user = new User();
 				user.setId(result.getLong("user_id"));
@@ -33,7 +37,8 @@ public class QueryDAO {
 				Query query = new Query();
 				query.setId(result.getLong("id"));
 				query.setUser(user);
-				query.setDate(result.getDate("date"));
+				
+				query.setDate(new Date(result.getTimestamp("date").getTime()));
 				query.setMessage(result.getString("message"));
 				query.setRelevance(result.getInt("relevance"));
 				queries.add(query);
@@ -47,12 +52,13 @@ public class QueryDAO {
 
 	public void saveQuery(Query query) {
 
-		String sql = "insert into query (user_id, message, date, relevance) values (? ,?, now(), ?)";
+		String sql = "insert into query (user_id, message, date, relevance) values (? ,?, now() ,?)";
 
 		try (Connection conn = Conn.getConnection();
 				PreparedStatement prepStmt = Conn.getPreparedStatement(conn, sql)) {
 			prepStmt.setLong(1, query.getUser().getId());
 			prepStmt.setString(2, query.getMessage());
+			prepStmt.setDate(3, new java.sql.Date(new Date().getTime()));
 			prepStmt.setInt(3, query.getRelevance());
 			prepStmt.execute();
 			System.out.println("Query [" + query.toString() + "] registrada com sucesso");

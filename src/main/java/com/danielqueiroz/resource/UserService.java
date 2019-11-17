@@ -13,6 +13,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import org.glassfish.jersey.server.model.ParamQualifier;
 
@@ -27,6 +28,24 @@ public class UserService {
 
 	
 	@GET
+	@Path("/out")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response logOut(@QueryParam("key") String key) {
+		UserBO bo = new UserBO();
+		User user = bo.getUser(key);
+		
+		if (user == null) {
+			return Response.status(Status.UNAUTHORIZED).header("Access-Control-Allow-Origin", "*").build();
+		}
+		
+		if (bo.logOut(user)) {
+			return Response.ok().header("Access-Control-Allow-Origin", "*").build();
+		} 
+		return Response.status(Status.BAD_REQUEST).header("Access-Control-Allow-Origin", "*").build();
+		
+	}
+	
+	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getUser(@QueryParam("key") String key) {
 		UserBO bo = new UserBO();
@@ -35,8 +54,6 @@ public class UserService {
 		return Response.ok(user).header("Access-Control-Allow-Origin", "*").build();
 	}
 	
-	
-	
 	@POST
 	@Path("/login")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
@@ -44,6 +61,10 @@ public class UserService {
 	public Response getLogin(@FormParam("username") String username, @FormParam("password") String password) {
 		UserBO bo = new UserBO();
 		String authkey = bo.getKey(username, password);
+		
+		if (authkey == null) {
+			return Response.status(Status.UNAUTHORIZED).header("Access-Control-Allow-Origin", "*").build();
+		}
 		
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("key", authkey);

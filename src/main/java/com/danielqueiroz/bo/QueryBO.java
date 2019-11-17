@@ -85,7 +85,7 @@ public class QueryBO {
 		StringBuilder sb = new StringBuilder();
 		sb.append(" select (count(id)/ " + this.entitiesCount +" * 100) as relevance, id, id_post, username, name, message, fallowers, location, postid,isRetweet, postdate from ( ");
 		mountSelectFromEntities(entities, sb);
-		sb.append( ") as result group by id order by relevance desc;");
+		sb.append( ") as result group by id order by relevance desc limit 25;");
 		
 		return sb.toString();
 	}

@@ -20,7 +20,6 @@ import com.danielqueiroz.model.Post;
 public class PostDAO {
 
 	public List<Post> getPosts(String sql) {
-
 		List<Post> posts = new ArrayList<>();
 
 		Connection conn = Conn.getConnection();
