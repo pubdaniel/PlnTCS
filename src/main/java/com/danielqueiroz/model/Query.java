@@ -8,7 +8,6 @@ public class Query {
 	private User user;
 	private Date date;
 	private String message;
-	private Database database;
 	private String sql;
 	private int relevance;
 
@@ -40,12 +39,7 @@ public class Query {
 	public void setMessage(String message) {
 		this.message = message;
 	}
-	public Database getDatabase() {
-		return database;
-	}
-	public void setDatabase(Database database) {
-		this.database = database;
-	}
+	
 	public int getRelevance() {
 		return relevance;
 	}
@@ -60,8 +54,7 @@ public class Query {
 	}
 	@Override
 	public String toString() {
-		return "Query id " + id + ", user " + user + ", date " + date + ", message " + message + ", database "
-				+ database + ", sql " + sql + ", relevance " + relevance;
+		return "Query id " + id + ", user " + user + ", date " + date + ", message " + message  + ", sql " + sql + ", relevance " + relevance;
 	}
 	
 	

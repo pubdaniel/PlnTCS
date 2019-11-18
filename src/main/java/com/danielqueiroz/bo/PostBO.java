@@ -14,6 +14,7 @@ import com.danielqueiroz.model.User;
 public class PostBO {
 
 	User user;
+	QueryBO queryBO;
 	
 	public PostBO(User user) {
 		this.user = user;
@@ -26,7 +27,7 @@ public class PostBO {
 	
 	public List<Post> getPosts(String text) throws QueryProcessorException, IOException {
 		//TODO  implementar busca com parametr => mensagem
-		QueryBO queryBO = new QueryBO(text, user);
+		queryBO = getQueryBO(text);
 		String querySql = queryBO.getSqlQuery();
 		
 		PostDAO dao = new PostDAO();
@@ -43,6 +44,13 @@ public class PostBO {
 		
 		return posts;
 
+	}
+
+	private QueryBO getQueryBO(String text) throws QueryProcessorException {
+		if (queryBO == null) {
+			return new QueryBO(text, user);
+		} 
+		return queryBO;
 	}
 	
 }

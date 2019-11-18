@@ -68,15 +68,17 @@ public class QueryBO {
 		List<Entity> places = queryObj.getEntity(Type.PLACE);
 		List<Entity> organizations = queryObj.getEntity(Type.ORGANIZATION);
 		List<Entity> nouns = queryObj.getEntity(Type.NOUN);
-		
+		List<Entity> events = queryObj.getEntity(Type.EVENT);
 		List<Entity> dates = queryObj.getEntity(Type.TIME);
 
-		this.entitiesCount = persons.size() + places.size() + organizations.size() + nouns.size();
+		this.entitiesCount = persons.size() + places.size() + organizations.size() + nouns.size() + events.size();
 		
 		entities.addAll(persons);
 		entities.addAll(nouns);
 		entities.addAll(organizations);
 		entities.addAll(places);
+		entities.addAll(dates);
+		entities.addAll(events);
 				
 		//melhorias
 		 // se antes de lugar tiver estiver em pesquisar fazer where post.place={lugar}

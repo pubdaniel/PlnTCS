@@ -73,7 +73,7 @@ public class PostDAO {
 		p.setPostid(result.getLong("postid"));
 		p.setRetweet(result.getBoolean("isRetweet"));
 		p.setText(result.getString("message"));
-		p.setDate(result.getDate("postdate"));
+		p.setDate(new Date(result.getTimestamp("postdate").getTime()));
 		
 		return p;
 	}

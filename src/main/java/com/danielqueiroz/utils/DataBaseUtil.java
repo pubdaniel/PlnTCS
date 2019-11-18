@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -23,15 +24,18 @@ public class DataBaseUtil {
 
 	static int count = 0;
 	static List<Post> posts;
+	static Date date;
 	
 	public static void savePostsFromCSV() {
+		
+		date = new Date();
 		File fileCSV = new File(
 				"D:\\Desenvimento\\git\\PlnTCS\\src\\main\\resources\\db\\08112019 144958-tweets-pt-BR.csv");
 
 		posts = new ArrayList<>();
 		try {
 			Files.lines(fileCSV.toPath(), Charset.forName("UTF-8")).forEach(l -> {
-				
+				date = new Date((date.getTime() - (1000L * 120)));
 				String[] line = l.split(";");
 				if (line.length == 9) {
 					
@@ -44,15 +48,9 @@ public class DataBaseUtil {
 					p.setPostid(Long.parseLong(line[5]));
 					p.setRetweet(Boolean.parseBoolean((line[6])));
 					p.setText(line[7]);
-					Date date;
-					try {
-						date = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").parse(line[8]);
-						p.setDate(date);
-					} catch (ParseException e) {
-						e.printStackTrace();
-					}
-//					savePost(p);
-					System.out.print(".");					
+					p.setDate(date);
+
+					System.out.print(date);					
 					if (posts.size() >= 100) {
 						savePosts(posts);
 						posts = new ArrayList<>();
@@ -84,9 +82,8 @@ public class DataBaseUtil {
 			prepStmt.setLong(6, p.getPostid());
 			prepStmt.setBoolean(7, p.isRetweet());
 			prepStmt.setString(8, p.getText());
-			prepStmt.setDate(9, new java.sql.Date(p.getDate().getTime()));
+			prepStmt.setTimestamp(9, new Timestamp(p.getDate().getTime()));
 			prepStmt.execute();
-
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -109,7 +106,7 @@ public class DataBaseUtil {
 					prepStmt.setLong(6, p.getPostid());
 					prepStmt.setBoolean(7, p.isRetweet());
 					prepStmt.setString(8, p.getText());
-					prepStmt.setDate(9, new java.sql.Date(p.getDate().getTime()));
+					prepStmt.setTimestamp(9, new Timestamp(p.getDate().getTime()));
 					prepStmt.execute();
 				} catch (SQLException e) {
 					e.printStackTrace();
