@@ -29,6 +29,7 @@ public class Cogroo {
 	
 	private Analyzer cogroo;
 	private Document document;
+	private List<Token> tokens;
 	 
 	
 	public Cogroo(String text) throws IOException {
@@ -42,16 +43,8 @@ public class Cogroo {
 	    this.document = document;
 	}
 	
-	public List<Sentence> getSentences() {
-		return document.getSentences();
-	}
-	
-	public List<Token> getTokens(Sentence sentence) {
-		return sentence.getTokens();
-	}
-	
 	public List<Token> getTokens() {
-		return document.getSentences().get(0).getTokens();
+		return this.tokens;
 	}
 	
 	public List<Entity> getNamesEntitys() {
@@ -69,7 +62,6 @@ public class Cogroo {
 			}
 		});
 		
-		
 		return namesEntitys;
 	}
 	
@@ -83,9 +75,12 @@ public class Cogroo {
 			});
 		});
 		
+		this.tokens = tokens;
+		
 		entities.addAll(getEntityFromTokensFiltredByPosTag("n", Constants.Entity.Type.NOUN, tokens));
 		entities.addAll(getEntityFromTokensFiltredByPosTag("num", Constants.Entity.Type.NUMERIC, tokens));
 		entities.addAll(getEntityFromTokensFiltredByPosTag("v-fin", Constants.Entity.Type.ACTION, tokens));
+		entities.addAll(getEntityFromTokensFiltredByPosTag("v-fin", Constants.Entity.Type.PROPOSITION, tokens));
 		
 		System.out.println(tokens);
 		

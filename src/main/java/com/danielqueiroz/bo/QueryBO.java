@@ -8,6 +8,7 @@ import java.util.List;
 import javax.validation.ConstraintTarget;
 
 import org.cogroo.analyzer.ComponentFactory;
+import org.cogroo.text.Token;
 
 import com.danielqueiroz.constants.Constants.Entity.Type;
 import com.danielqueiroz.dao.QueryDAO;
@@ -53,52 +54,116 @@ public class QueryBO {
 		queryObject.setText(text);
 
 		queryObject.setEntitys(nlp.findNamedEntity());
-		
+
 		queryObject.getEntitys().addAll(cogroo.getEntitys());
 
-		 // Ver com professor como bildar projeto cogroo no projeto e usar RESOURCES (models)
-		System.out.println(queryObject);
 		return queryObject;
 	}
 
 	public String getSqlQuery() throws IOException {
-		//filtra tipos de entidades
+		// filtra tipos de entidades
 		QueryObject queryObj = processQuery();
 		List<Entity> persons = queryObj.getEntity(Type.PERSON);
+
 		List<Entity> places = queryObj.getEntity(Type.PLACE);
 		List<Entity> organizations = queryObj.getEntity(Type.ORGANIZATION);
 		List<Entity> nouns = queryObj.getEntity(Type.NOUN);
 		List<Entity> events = queryObj.getEntity(Type.EVENT);
 		List<Entity> dates = queryObj.getEntity(Type.TIME);
 
+		List<Token> tokens = cogroo.getTokens();
+		System.out.println(tokens);
+
+		// who when where
+		extractWWW(queryObj, persons, places, dates, tokens);
+
 		this.entitiesCount = persons.size() + places.size() + organizations.size() + nouns.size() + events.size();
-		
+
 		entities.addAll(persons);
 		entities.addAll(nouns);
 		entities.addAll(organizations);
 		entities.addAll(places);
 		entities.addAll(dates);
 		entities.addAll(events);
-				
-		//melhorias
-		 // se antes de lugar tiver estiver em pesquisar fazer where post.place={lugar}
-		 // se antes de pessoa tiver => chamadas, de, do, da (lema) fazer where posts.username={nome}
-		
-		StringBuilder sb = new StringBuilder();
-		sb.append(" select (count(id)/ " + this.entitiesCount +" * 100) as relevance, id, id_post, username, name, message, fallowers, location, postid,isRetweet, postdate from ( ");
-		mountSelectFromEntities(entities, sb);
-		sb.append( ") as result group by id order by relevance desc limit 25;");
-		
-		return sb.toString();
+
+		String sql = getSQLString(queryObj);
+		return sql;
 	}
 
-	private void mountSelectFromEntities(List<Entity> entities, StringBuilder sb) {
-		for (int i =0; i < entities.size(); i++) {
-			sb.append(
-					" select count(1) as rel, id, id_post, username, name, message, fallowers, location, postid,isRetweet, postdate from post where message like \"%" + entities.get(i).getDescription()+ "%\" group by id ");
-			if (!(i + 1  == entities.size())) {
-				sb.append(" union all ");	
+	private String getSQLString(QueryObject queryObj) {
+		List<String> queries = new ArrayList<>();
+
+		StringBuilder sb = new StringBuilder();
+
+		sb.append(" select (count(id)/ ##### * 100) as relevance, id, id_post, username, name, message, fallowers, location, postid,isRetweet, postdate from ( ");
+
+		for (Entity e : entities) {
+			queries.add(
+					" select count(1) as rel, id, id_post, username, name, message, fallowers, location, postid,isRetweet, postdate from post where message like \"%"
+							+ e.getDescription().trim() + "%\" group by id ");
+		}
+		if (queryObj.hasFromWhere()) {
+			queries.add(
+					" select count(1) as rel, id, id_post, username, name, message, fallowers, location, postid,isRetweet, postdate from post where location like \"%"
+							+ queryObj.getWhere().trim() + "%\" group by id ");
+		}
+		if (queryObj.hasFromWho()) {
+			queries.add(
+					" select count(1) as rel, id, id_post, username, name, message, fallowers, location, postid,isRetweet, postdate from post where location like \"%"
+							+ queryObj.getFromWho().trim() + "%\" group by id ");
+		}
+		
+		for (int i = 0; i < queries.size(); i++) {
+			sb.append(queries.get(i));
+			if (i + 1 != queries.size()) {
+				sb.append(" union all ");
 			}
+			
+		}
+
+		sb.append(") as result group by id order by relevance desc limit 25;");
+
+		String sql = sb.toString().replace("#####", String.valueOf(queries.size()));
+		System.out.println();
+		System.out.println(sql);
+		return sql ;
+	}
+
+	private void extractWWW(QueryObject queryObj, List<Entity> persons, List<Entity> places, List<Entity> dates,
+			List<Token> tokens) {
+		for (int i = 0; i < tokens.size(); i++) {
+			if (tokens.get(i).getPOSTag().equalsIgnoreCase("prp")) {
+
+				if (tokens.get(i).getLemmas()[0].toString().equalsIgnoreCase("de")) {
+					String name = tokens.get(i + 1).getLexeme().trim();
+					for (Entity e : persons) {
+						if (e.getDescription().toString().trim().equalsIgnoreCase(name)) {
+							queryObj.setFromWho(name.trim());
+							System.out.println("*Buscando posts do usuário: " + queryObj.getFromWho());
+						}
+					}
+				}
+				if (tokens.get(i).getLemmas()[0].toString().equalsIgnoreCase("em")) {
+					if (tokens.get(i + 1).getPOSTag().equalsIgnoreCase("prop")) {
+						String place = tokens.get(i + 1).getLexeme().trim();
+						for (Entity e : places) {
+							if (e.getDescription().toString().trim().equalsIgnoreCase(place)) {
+								queryObj.setWhere(place.trim());
+								System.out.println("*Buscando posts em: " + queryObj.getWhere());
+							}
+						}
+					}
+					if (tokens.get(i + 1).getPOSTag().equalsIgnoreCase("num")) {
+						for (Entity e : dates) {
+							if (e.getDescription().toString().trim().equalsIgnoreCase(tokens.get(i + 1).getLexeme())) {
+//								queryObj.setFromWhen();
+								System.out.println("*Data é: " + tokens.get(i + 1).getLexeme());
+							}
+						}
+					}
+				}
+			}
+
 		}
 	}
 
@@ -107,14 +172,13 @@ public class QueryBO {
 		return dao.getQueries();
 	}
 
-	
 	public void saveQuery(List<Post> posts) {
 		Integer count = posts.size();
 		Integer sum = 0;
 		for (Post p : posts) {
 			sum += p.getRelevance();
 		}
-		
+
 	}
 
 	public Query getQuery(int postsSize) {
@@ -129,21 +193,8 @@ public class QueryBO {
 		for (Entity e : entities) {
 			sum += e.getProbability();
 		}
-		return (sum *100 ) / entities.size();
-		
+		return (sum * 100) / entities.size();
+
 	}
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-

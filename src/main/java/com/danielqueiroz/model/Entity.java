@@ -10,6 +10,7 @@ import opennlp.tools.util.Span;
 public class Entity {
 
 	private Long id;
+	private int index;
 	private String description;
 	private Type type;
 	private double probability;
@@ -22,6 +23,7 @@ public class Entity {
 	
 	public Entity(Span name) {
 		this.probability = name.getProb();
+		this.index = name.getStart();
 		Type type = getTypeConstant(name.getType());
 		this.type = type;
 		
@@ -75,6 +77,18 @@ public class Entity {
 		this.id = id;
 	}
 	
+	
+	
+	public int getIndex() {
+		return index;
+	}
+
+
+	public void setIndex(int index) {
+		this.index = index;
+	}
+
+
 	@Override
 	public String toString() {
 		return description + " | " + type + " | " + probability;

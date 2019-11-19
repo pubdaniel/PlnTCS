@@ -19,6 +19,9 @@ public class QueryObject {
 	private List<Entity> entitys;
 	private List<Sentence> sentences;
 	private String text;
+	private String fromWho;
+	private String where;
+	private Date fromWhen;
 	
 	public Language getLanguage() {
 		return language;
@@ -56,25 +59,39 @@ public class QueryObject {
 		return entitys.stream().filter(p -> type.equals(p.getType())).collect(Collectors.toList());
 	}
 
-	public void setPersons(List<Entity> names) {
-		// TODO Auto-generated method stub
-		
+	public Boolean hasFromWho() {
+		return getFromWho() != null && !getFromWho().trim().isEmpty();
+	}
+	
+	public String getFromWho() {
+		return fromWho;
 	}
 
-	public void setPlaces(List<Entity> places) {
-		// TODO Auto-generated method stub
-		
+	public void setFromWho(String fromWho) {
+		this.fromWho = fromWho;
+	}
+	
+	public Boolean hasFromWhere() {
+		return getWhere() != null && !getWhere().trim().isEmpty();
+	}
+	
+	public String getWhere() {
+		return where;
 	}
 
-	public void setPeriod(Period period) {
-		// TODO Auto-generated method stub
-		
+	public void setWhere(String where) {
+		this.where = where;
 	}
 
-	public void setPhrases(List<String> extractPhrases) {
-		// TODO Auto-generated method stub
-		
+	public Date getFromWhen() {
+		return fromWhen;
 	}
+
+	public void setFromWhen(Date fromWhen) {
+		this.fromWhen = fromWhen;
+	}
+
+	
 	
 	
 	

@@ -90,9 +90,7 @@ public class OpenNlp {
 	            	description+=testSentence[i]+" ";
 	            }
 	            entity.setDescription(description);
-	            
 	        }
-	        
 	        
 		} catch (IOException e) {
 			e.printStackTrace();

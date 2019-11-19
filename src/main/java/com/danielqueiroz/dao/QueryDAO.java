@@ -61,7 +61,6 @@ public class QueryDAO {
 			prepStmt.setDate(3, new java.sql.Date(new Date().getTime()));
 			prepStmt.setInt(3, query.getRelevance());
 			prepStmt.execute();
-			System.out.println("Query [" + query.toString() + "] registrada com sucesso");
 		} catch (SQLException e) {
 			System.err.println("Erro ao registrar log de query: " + e.getMessage());
 		}

@@ -80,7 +80,6 @@ public class PostDAO {
 
 	public static void main(String[] args) {
 		PostDAO dao = new PostDAO();
-		System.out.println(dao.getPosts());
 	}
 
 }

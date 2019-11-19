@@ -41,7 +41,7 @@ public final class Constants {
 			NOUN("n"), 
 			DATE("date"), 
 			EVENT("event"), 
-			ACTION("v-fin");
+			ACTION("v-fin"), PROPOSITION("prep");
 			
 			private String name;
 
