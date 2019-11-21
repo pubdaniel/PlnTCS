@@ -1,6 +1,5 @@
 package com.danielqueiroz.model;
 
-import javax.validation.ConstraintTarget;
 
 import com.danielqueiroz.constants.Constants;
 import com.danielqueiroz.constants.Constants.Entity.Type;
@@ -10,7 +9,6 @@ import opennlp.tools.util.Span;
 public class Entity {
 
 	private Long id;
-	private int index;
 	private String description;
 	private Type type;
 	private double probability;
@@ -23,7 +21,6 @@ public class Entity {
 	
 	public Entity(Span name) {
 		this.probability = name.getProb();
-		this.index = name.getStart();
 		Type type = getTypeConstant(name.getType());
 		this.type = type;
 		
@@ -79,14 +76,6 @@ public class Entity {
 	
 	
 	
-	public int getIndex() {
-		return index;
-	}
-
-
-	public void setIndex(int index) {
-		this.index = index;
-	}
 
 
 	@Override
