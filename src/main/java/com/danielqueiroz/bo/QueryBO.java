@@ -109,7 +109,7 @@ public class QueryBO {
 		}
 		if (queryObj.hasFromWho()) {
 			queries.add(
-					" select count(1) as rel, id, id_post, username, name, message, fallowers, location, postid,isRetweet, postdate from post where location like \"%"
+					" select count(1) as rel, id, id_post, username, name, message, fallowers, location, postid,isRetweet, postdate from post where name like \"%"
 							+ queryObj.getFromWho().trim() + "%\" group by id ");
 		}
 		

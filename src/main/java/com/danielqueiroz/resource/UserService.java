@@ -1,4 +1,4 @@
-package com.danielqueiroz.resource;
+	package com.danielqueiroz.resource;
 
 import java.io.File;
 import java.util.HashMap;
